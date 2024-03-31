@@ -1,0 +1,86 @@
+openapi: 3.0.0
+info:
+  title: VariousNotificationsBot API
+  description: API for VariousNotificationsBot, a centralized notification service for sending messages through a Telegram bot.
+  version: "1.0.0"
+servers:
+  - url: https://api.variousnotificationsbot.com/v1
+    description: Production server
+
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      description: Registers a new user and returns a unique API key for authentication.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The user's username or identifier.
+                email:
+                  type: string
+                  description: The user's email address for verification and communication.
+              required:
+                - username
+                - email
+      responses:
+        '200':
+          description: Successfully registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apiKey:
+                    type: string
+                    description: The unique API key to be used for authentication in future requests.
+
+  /sendNotification:
+    post:
+      summary: Send a notification
+      description: Sends a notification message to the user's Telegram account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                apiKey:
+                  type: string
+                  description: The user's API key for authentication.
+                message:
+                  type: string
+                  description: The message content to send.
+              required:
+                - apiKey
+                - message
+      responses:
+        '200':
+          description: Notification sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  messageId:
+                    type: string
+                    description: The unique ID of the sent message.
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+
+security:
+  - ApiKeyAuth: []
+
