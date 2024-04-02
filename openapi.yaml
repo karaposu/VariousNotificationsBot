@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  description: "API for VariousNotificationsBot, a centralized notification service\
+    \ for sending messages through a Telegram bot."
+  title: VariousNotificationsBot API
+  version: 1.0.0
+servers:
+- description: Production server
+  url: https://api.variousnotificationsbot.com
+security:
+- ApiKeyAuth: []
+paths:
+  /v1/send-notification:
+    post:
+      description: Sends a notification message to the user's Telegram account via bot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sendNotification_post_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sendNotification_post_200_response'
+          description: Notification sent successfully
+      summary: Send a notification
+components:
+  schemas:
+    sendNotification_post_request:
+      type: object
+      properties:
+        apiKey:
+          description: The user's API key for authentication.
+          title: apiKey
+          type: string
+        message:
+          description: The message content to send.
+          title: message
+          type: string
+      required:
+      - apiKey
+      - message
+
+
+    sendNotification_post_200_response:
+      example:
+        success: true
+        messageId: messageId
+      properties:
+        success:
+          title: success
+          type: boolean
+        messageId:
+          description: The unique ID of the sent message.
+          title: messageId
+          type: string
+      title: _sendNotification_post_200_response
+      type: object
+  securitySchemes:
+    ApiKeyAuth:
+      in: header
+      name: X-API-KEY
+      type: apiKey
+
