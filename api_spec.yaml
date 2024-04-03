@@ -8,37 +8,13 @@ servers:
     description: Production server
 
 paths:
-  /register:
-    post:
-      summary: Register a new user
-      description: Registers a new user and returns a unique API key for authentication.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                  description: The user's username or identifier.
-                email:
-                  type: string
-                  description: The user's email address for verification and communication.
-              required:
-                - username
-                - email
+  /health:
+    get:
+      summary: healthcheck
+      description: healthcheck
       responses:
         '200':
-          description: Successfully registered
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  apiKey:
-                    type: string
-                    description: The unique API key to be used for authentication in future requests.
+          description: healthly
 
   /sendNotification:
     post:
@@ -74,12 +50,50 @@ paths:
                     type: string
                     description: The unique ID of the sent message.
 
+        "400":
+          description: Bad request. The request body or parameters are incorrect
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "401":
+          description: Unauthorized. API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "500":
+          description: Internal server error. An error occurred on the server while processing the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+
 components:
+  schemas:
+    sendNotification_post_request:
+      type: object
+      # Define your request schema here
+    sendNotification_post_200_response:
+      type: object
+      # Define your 200 OK response schema here
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: A descriptive error message.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: X-API-KEY
+
+
 
 security:
   - ApiKeyAuth: []
