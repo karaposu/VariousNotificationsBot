@@ -1,6 +1,12 @@
 from sqlalchemy.orm import Session
 from database_setup import User, APIKey, engine  # Ensure these are correctly imported
 
+import logging
+
+# Basic configuration for logging
+# logging.basicConfig(level=logging.INFO)
+# logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 class SendNotificationService:
     def __init__(self, request, dependencies=None):

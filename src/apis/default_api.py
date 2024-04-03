@@ -3,7 +3,10 @@
 from typing import Dict, List  # noqa: F401
 import importlib
 import pkgutil
+import logging
+from fastapi import Body, Security, HTTPException
 
+logger = logging.getLogger(__name__)
 from apis.default_api_base import BaseDefaultApi
 import impl
 from impl.services.send_notification import SendNotificationService
@@ -52,6 +55,21 @@ async def send_notification_post(
         get_token_ApiKeyAuth
     ),
 ) :
+    async def send_notification_post(
+            send_notification_post_request: SendNotificationPostRequest = Body(None, description=""),
+            token_ApiKeyAuth: TokenModel = Security(get_token_ApiKeyAuth),
+    ):
+        logger.info("Received request to send notification.")
 
-    service_instance = await SendNotificationService.create(send_notification_post_request)
+        # Log the request body for debugging. Be cautious with logging sensitive information in a production environment.
+        logger.debug(f"Request body: {send_notification_post_request.json()}")
+
+        try:
+            service_instance = await SendNotificationService.create(send_notification_post_request)
+            logger.info("Successfully processed notification request.")
+            # Optionally, return a response or log more details about the service instance
+        except Exception as e:
+            logger.error(f"Error processing notification request: {e}", exc_info=True)
+            # Consider raising an HTTPException or handling the error as appropriate for your application
+            raise HTTPException(status_code=500, detail="Internal Server Error")
 
