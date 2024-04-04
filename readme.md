@@ -2,19 +2,45 @@
 
 ![Example Image](Variousnotificationsbot.drawio.png)
 
-is your universal Telegram notification conduit. Designed to bridge your apps with Telegram users effortlessly, it enables seamless notifications delivery right within Telegram. Here's how to get started:
+Designed to bridge your apps with Telegram users effortlessly. https://t.me/variousnotificationsbot
 
-1. Search for and initiate a conversation with VariousNotificationsBot on Telegram by sending a `/start` command.
-2. Obtain your unique `generated_token` from the bot.
-3. Use the `generated_token` to send notifications via a POST request in the following manner:
+1. User finds VariousNotificationsBot on Telegram. Presses a `/start` command. 
+2. Unique token called `vnb_token` is generated and sent to the user immediately. 
+3. User uses/shares this `vnb_token` with your app to get notifications. 
+
+As a developer who wants to send a notification to your users all you have to do is send a post request: 
 
 ```sh
-curl -X POST http://104.197.79.151:8000/sendNotification -H "Content-Type: application/json" -d '{"message": "YourMessageHere", "apiKey": "generated_token_here"}'
+
+curl -X POST http://api.variousnotificationsbot:8188/sendNotification \
+     -H "Content-Type: application/json" \ 
+     -d '{"message": "YourMessageHere", "apiKey": "vnb_token_here"}'
 ```
 
-For comprehensive instructions and further information, please explore our website at www.variousnotificationsbot.com.
+or in python use this function :
+
+```
+import requests
+def send_notification_(vnb_token, message ):
+    """
+    - message (str): The message to be sent.
+    - api_key (str): The API key for authentication.
+
+    """
+    host="http://api.variousnotificationsbot.com:8188/sendNotification"
+    headers = {"Content-Type": "application/json"}
+    data = {
+        "message": message,
+        "apiKey": vnb_token
+    }
+
+    response = requests.post(host, json=data, headers=headers)
+    return response.status_code, response.text
+```
 
 This service is perfect for developers and individuals who require a reliable notification system for their applications or daily tasks, without the complexity of managing a Telegram bot or navigating through the setup process to find chat IDs
+
+For comprehensive instructions and further information, please explore our website at www.variousnotificationsbot.com.
 
 ## Key Advantages
 
@@ -22,28 +48,6 @@ This service is perfect for developers and individuals who require a reliable no
 - **Universal Access**: Designed to be accessible for everyone. Whether you're a solo developer, a small startup, or just someone looking for a convenient way to receive notifications from your arduino application, VariousNotificationsBot provides a simple, unified solution.
 - **Customizable and Secure**: With VariousNotificationsBot, you gain the flexibility to customize your notification preferences while ensuring that your data remains secure through encrypted communication and authenticated API access.
 
-## How to integrate 
-
-### Simplified Notification Process
-**You or your users whom you want to send notifications through telegram**
-
-1. **User can open telegram app and search for  variousnotificationsbot and click join. And then simply type /start** This will output a private **token**.  
-
-2. **Integrate and Send Notifications**: Use this token key to authenticate and send notifications from your application to the user through variousnotificationsbot. VariousNotificationsBot takes care of delivering these messages directly to user's Telegram account, eliminating the need for you/users to manage a bot or find chat IDs.
-
-### Example Usage
-
-Sending a notification is as simple as making a POST request:
-
-```bash
-
-
-curl -X POST http://104.197.79.151:8000/sendNotification \
-     -H "Content-Type: application/json" \ 
-     -d '{"message": "YourMessageHere", "apiKey": "generated_token_here"}'
-
-
-```
 
 ## Why VariousNotificationsBot?
 
