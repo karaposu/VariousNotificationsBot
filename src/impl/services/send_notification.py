@@ -15,10 +15,12 @@ class SendNotificationService:
         self.preprocessed_data = None
         self.compatible = False
         self.response = None
+        logger.debug("SendNotificationService instance created")
 
     @classmethod
     async def create(cls, request, dependencies=None):
         # Create an instance of the class
+        logger.info("Creating SendNotificationService instance")
         self = cls(request, dependencies)
 
         # Perform preprocessing and request processing
@@ -27,9 +29,11 @@ class SendNotificationService:
         return self
 
     def check_compatibility(self, api_key=None, message=None):
+        # logger.info(f"Check compatibility: {compatible}")
         return True, ""
 
     def preprocess_request_data(self):
+        logger.info("Preprocessing request data")
         session = Session(bind=engine)
         try:
             # Query the database for the API key
@@ -41,14 +45,16 @@ class SendNotificationService:
                                                                message=self.request.message)
                 unpacked = {"COMPATIBLE": COMPATIBLE, "api_key": self.request.api_key, "message": self.request.message,
                             "telegram_id": telegram_id}
+                self.preprocessed_data = {"COMPATIBLE": COMPATIBLE, "api_key": self.request.api_key, "message": self.request.message, "telegram_id": telegram_id}
             else:
-                # Handle the case where the API key does not exist
+                logger.error("API key not found.")
                 COMPATIBLE, details = False, "API key not found."
                 unpacked = {"COMPATIBLE": COMPATIBLE, "api_key": self.request.api_key, "message": self.request.message,
                             "telegram_id": None}
 
             self.preprocessed_data = unpacked
         except Exception as e:
+            logger.error("Error during preprocessing", exc_info=True)
             session.rollback()
             raise e
         finally:
@@ -61,9 +67,12 @@ class SendNotificationService:
             telegram_id=self.preprocessed_data["telegram_id"]
             telegram_id=int(telegram_id)
             # 572163035
+            message = self.preprocessed_data["message"]
+            logger.info(f"Sending notification to {telegram_id} with message: {message}")
             await send_notification(telegram_id, self.preprocessed_data["message"])
         else:
             pass  # Handle incompatibility
 
     async def process_request(self):
+        logger.info("Processing request")
         await self.send_notification()

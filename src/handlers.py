@@ -83,9 +83,9 @@ def save_new_user_or_get_existing_key(telegram_id):
 
 
 from aiogram.types import Message
-async def send_notification(message: Message, user_id, notification):
-
-    await message.answer(notification)
+# async def send_notification(message: Message, user_id, notification):
+#
+#     await message.answer(notification)
 
 
 @backoff.on_exception(backoff.expo,

@@ -38,6 +38,24 @@ ns_pkg = impl
 for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
     importlib.import_module(name)
 
+
+@router.get(
+    "/v1/health",
+    responses={
+        200: {"description": "healthcheck."},
+    },
+    tags=["default"],
+    summary="healtcheck",
+    response_model_by_alias=True,
+)
+async def healthcheck(
+    token_ApiKeyAuth: TokenModel = Security(
+        get_token_ApiKeyAuth
+    ),
+) -> None:
+    # return "Healthy", 200
+    return {"message": "Healthy"}
+
 @router.post(
     "/sendNotification",
     responses={
@@ -49,13 +67,13 @@ for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
 )
 
 
+# async def send_notification_post(
+#     send_notification_post_request: SendNotificationPostRequest = Body(None, description=""),
+#     token_ApiKeyAuth: TokenModel = Security(
+#         get_token_ApiKeyAuth
+#     ),
+# ) :
 async def send_notification_post(
-    send_notification_post_request: SendNotificationPostRequest = Body(None, description=""),
-    token_ApiKeyAuth: TokenModel = Security(
-        get_token_ApiKeyAuth
-    ),
-) :
-    async def send_notification_post(
             send_notification_post_request: SendNotificationPostRequest = Body(None, description=""),
             token_ApiKeyAuth: TokenModel = Security(get_token_ApiKeyAuth),
     ):

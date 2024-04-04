@@ -24,6 +24,11 @@ logger = logging.getLogger(__name__)
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 database_url = os.getenv('DATABASE_URL')
 
+# aiogram 3.5.0
+# from aiogram.types import DefaultBotProperties
+# default_properties = DefaultBotProperties(parse_mode='HTML')
+# bot = Bot(BOT_TOKEN, default=default_properties)
+
 bot = Bot(BOT_TOKEN, parse_mode='HTML')
 bot_task = None
 
@@ -59,7 +64,6 @@ async def start_bot():
 
     # This will start the bot
     await dispatcher.start_polling(bot)
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
